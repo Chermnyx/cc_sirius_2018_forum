@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <b-navbar toggleable="md" type="dark" variant="danger" class="mb-3">
-      <b-navbar-brand>Cyber2ch</b-navbar-brand>
+      <b-navbar-brand to="/">Cyber2ch</b-navbar-brand>
       <b-navbar-toggle target="nav_collapse" />
 
       <b-collapse is-nav id="nav_collapse">
