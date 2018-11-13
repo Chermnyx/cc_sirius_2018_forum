@@ -10,6 +10,7 @@ interface IThread {
   rating: number;
   creator: IUser;
   canVote?: boolean;
+  creationDate: string;
 }
 
 interface IPost {

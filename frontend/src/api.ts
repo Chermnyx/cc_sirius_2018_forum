@@ -15,6 +15,13 @@ export async function login(email: string, password: string): Promise<string> {
   throw new UserNotFoundError(email);
 }
 
+/**
+ * @returns voted?
+ */
+export async function vote(threadId: string, vote: -1 | 1) {
+  return true;
+}
+
 export async function editProfile(
   username?: string,
   email?: string,
@@ -33,6 +40,7 @@ export async function newThread(title: string): Promise<IThread> {
     },
     rating: 0,
     title,
+    creationDate: new Date().toISOString(),
   };
 }
 
@@ -51,6 +59,7 @@ export async function getThreads(
           username: 'kek',
         },
         rating: 1,
+        creationDate: new Date().toISOString(),
       },
     ],
     total: 1,

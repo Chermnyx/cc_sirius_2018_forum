@@ -11,9 +11,19 @@
       New Thread
     </b-btn>
 
-    <b-table :items="threads" :fields="threads_fields" :busy="pageLoading" hover @row-clicked="onRowClicked">
+    <b-table :items="threads" :fields="threads_fields" :busy="pageLoading" small>
+      <template slot="title" slot-scope="{ value: title, item }">
+        <router-link :to="`/thread/${item._id}`">{{ title }}</router-link>
+      </template>
+
       <template slot="creator" slot-scope="{ value: creator }">
         <router-link :to="`/user/${creator._id}`">@{{creator.username}}</router-link>
+      </template>
+
+      <template slot="rating" slot-scope="{ value: rating, item }">
+        {{ rating }}
+        <b-btn variant="link" size="sm" @click="() => ratingMinus(item._id)"><b class="text-danger mx-1">-</b></b-btn>
+        <b-btn variant="link" size="sm" @click="() => ratingPlus(item._id)"><b class="text-success mx-1">+</b></b-btn>
       </template>
     </b-table>
 
@@ -34,6 +44,11 @@ export default class IndexView extends Vue {
   threads_fields = [
     { key: 'title', label: 'Title' },
     { key: 'creator', label: 'Creator' },
+    // {
+    //   key: 'creationDate',
+    //   label: 'Created',
+    //   formatter: (x: string) => new Date(x).toLocaleString(),
+    // },
     { key: 'rating', label: 'Rating' },
   ];
   pageLoading = true;
@@ -61,6 +76,23 @@ export default class IndexView extends Vue {
     this.changePage(x);
   }
 
+  async ratingPlus(_id: string) {
+    const status = await api.vote(_id, 1);
+    const thread = this.threads.find((x) => x._id === _id);
+    if (thread === undefined) return;
+    if (status) {
+      Vue.set(thread, 'rating', thread.rating + 1);
+    }
+  }
+  async ratingMinus(_id: string) {
+    const status = await api.vote(_id, -1);
+    const thread = this.threads.find((x) => x._id === _id);
+    if (thread === undefined) return;
+    if (status) {
+      Vue.set(thread, 'rating', thread.rating - 1);
+    }
+  }
+
   async changePage(page: number) {
     this.pageLoading = true;
 
@@ -71,10 +103,6 @@ export default class IndexView extends Vue {
     ));
 
     this.pageLoading = false;
-  }
-
-  onRowClicked({ _id }: { _id: string }) {
-    this.$router.push(`/thread/${_id}`);
   }
 
   created() {
