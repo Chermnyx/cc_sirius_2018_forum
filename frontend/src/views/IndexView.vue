@@ -1,11 +1,84 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+  <div class="container">
+    <b-modal hide-header-close :no-close-on-esc="creatingThread" :no-close-on-backdrop="creatingThread" :busy="creatingThread" @hide="onModalHide" v-model="indexModalActive" @ok="onModalOK" title="Create new thread">
+      <b-form-group label="Thread title">
+        <b-form-input :disabled="creatingThread" ref="newThreadInput" type="text" v-model="newThreadTitle" />
+      </b-form-group>
+    </b-modal>
+
+    <h1 class="float-left">Threads</h1>
+    <b-btn @click="indexModalActive = !indexModalActive" variant="link" class="mt-1 float-right">
+      New Thread
+    </b-btn>
+
+    <b-table :items="threads" :fields="threads_fields" :busy="pageLoading" hover @row-clicked="onRowClicked">
+      <template slot="creator" slot-scope="{ value: creator }">
+        <router-link :to="`/user/${creator._id}`">@{{creator.username}}</router-link>
+      </template>
+    </b-table>
+
+    <b-pagination align="center" :total-rows="this.threadsCount" v-model="pageVModel" :per-page="this.perPage" :disabled="pageLoading" />
   </div>
 </template>
 
 <script lang="ts">
+import * as api from '@/api';
 import { Component, Vue } from 'vue-property-decorator';
-export default class IndexView extends Vue {}
+
+@Component
+export default class IndexView extends Vue {
+  page = 0;
+  threadsCount = 0;
+  perPage = 20;
+  threads: IThread[] = [];
+  threads_fields = [
+    { key: 'title', label: 'Title' },
+    { key: 'creator', label: 'Creator' },
+    { key: 'rating', label: 'Rating' },
+  ];
+  pageLoading = true;
+  indexModalActive = false;
+  creatingThread = false;
+
+  newThreadTitle = '';
+
+  async onModalOK(e: Event) {
+    e.preventDefault();
+    this.creatingThread = true;
+    const newThread = await api.newThread(this.newThreadTitle);
+    this.creatingThread = false;
+    this.$router.push(`/thread/${newThread._id}`);
+  }
+  onModalHide() {
+    this.newThreadTitle = '';
+  }
+
+  get pageVModel() {
+    return this.page;
+  }
+
+  set pageVModel(x: number) {
+    this.changePage(x);
+  }
+
+  async changePage(page: number) {
+    this.pageLoading = true;
+
+    this.page = page;
+    ({ threads: this.threads, total: this.threadsCount } = await api.getThreads(
+      this.perPage,
+      this.page * this.perPage,
+    ));
+
+    this.pageLoading = false;
+  }
+
+  onRowClicked({ _id }: { _id: string }) {
+    this.$router.push(`/thread/${_id}`);
+  }
+
+  created() {
+    this.changePage(0);
+  }
+}
 </script>

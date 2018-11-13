@@ -1,31 +1,36 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
+    <b-navbar toggleable="md" type="dark" variant="danger" class="mb-3">
+      <b-navbar-brand>Cyber2ch</b-navbar-brand>
+      <b-navbar-toggle target="nav_collapse" />
+
+      <b-collapse is-nav id="nav_collapse">
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item to="/my_profile" v-if="store.authorized">
+            <strong>@{{ store.profile.username }}</strong>
+          </b-nav-item>
+
+          <b-nav-item to="/login" v-else>
+            login
+          </b-nav-item>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
+
     <router-view />
   </div>
 </template>
 
+<script lang="ts">
+import Component from 'vue-class-component';
+import Vue from 'vue';
+import store from '@/store';
+
+@Component
+export default class App extends Vue {
+  store = store;
+}
+</script>
+
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
 </style>
