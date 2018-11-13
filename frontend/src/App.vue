@@ -33,4 +33,7 @@ export default class App extends Vue {
 </script>
 
 <style>
+body {
+  padding: 0 !important;
+}
 </style>

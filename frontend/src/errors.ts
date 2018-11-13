@@ -21,3 +21,5 @@ export class UserExistError extends Error {
 }
 
 export class UnauthorizedError extends Error {}
+export class InvalidPasswordError extends Error {}
+export class AlreadyVotedError extends Error {}

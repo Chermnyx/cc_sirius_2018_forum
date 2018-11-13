@@ -9,6 +9,7 @@ interface IThread {
   title: string;
   rating: number;
   creator: IUser;
+  canVote?: boolean;
 }
 
 interface IPost {
