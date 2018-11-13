@@ -10,5 +10,10 @@ export default new Router({
       name: 'IndexView',
       component: () => import('@/views/IndexView.vue'),
     },
+    {
+      path: '/login',
+      name: 'LoginView',
+      component: () => import('@/views/LoginView.vue'),
+    },
   ],
 });

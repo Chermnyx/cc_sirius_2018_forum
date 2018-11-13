@@ -74,7 +74,6 @@ export async function getPosts(
           email: 'kek@kek.kek',
           username: 'kek',
         },
-        type: 'text',
         text: `\
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in orci nec sapien varius iaculis. Donec rutrum elit facilisis, porttitor eros et, bibendum velit. Sed diam tellus, sodales ut euismod sed, molestie mollis urna. Pellentesque eu dolor hendrerit eros porta eleifend sit amet eget nunc. Vivamus a luctus ex. Pellentesque consectetur tristique mi, a iaculis nulla ultricies non. Sed purus erat, ultrices eu justo et, ullamcorper bibendum nulla. Phasellus non dignissim tellus. Sed blandit pharetra felis. Morbi aliquam eleifend diam sed rutrum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nullam efficitur risus quis nunc consequat, in tincidunt mi feugiat. Nulla id diam in erat pharetra efficitur vel et quam. Aenean pharetra, dolor vitae rhoncus tincidunt, eros lorem convallis nulla, sed dignissim erat tortor sed metus. Mauris tristique, felis ac auctor cursus, mi nunc mollis tortor, eget maximus nisi sem vel massa. Donec consectetur ultricies pretium.
 
@@ -85,7 +84,6 @@ Aliquam pulvinar nisi enim, ut aliquam urna auctor nec. Nunc nibh quam, efficitu
         _id: 'kek1',
         creationDate: new Date().toISOString(),
         pic: 'https://www.rd.com/wp-content/uploads/2016/04/01-cat-wants-to-tell-you-laptop.jpg',
-        type: 'pic',
         threadId: 'th1',
         author: {
           _id: 'user1',

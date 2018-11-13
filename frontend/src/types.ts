@@ -16,7 +16,6 @@ interface IPost {
   _id: string;
   threadId: string;
   author: IUser;
-  type: 'pic' | 'text';
   text?: string;
   pic?: string;
   creationDate: string;
