@@ -66,6 +66,20 @@ export async function getThreads(
   };
 }
 
+export async function getThread(_id: string): Promise<IThread> {
+  return {
+    _id: 'th1',
+    title: 'THREAD',
+    creator: {
+      _id: 'user1',
+      email: 'kek@kek.kek',
+      username: 'kek',
+    },
+    rating: 1,
+    creationDate: new Date().toISOString(),
+  };
+}
+
 export async function getPosts(
   threadId: string,
   count: number,

@@ -20,5 +20,11 @@ export default new Router({
       name: 'MyProfileView',
       component: () => import('@/views/MyProfileView.vue'),
     },
+    {
+      path: '/thread/:_id',
+      name: 'ThreadView',
+      props: true,
+      component: () => import('@/views/ThreadView.vue'),
+    },
   ],
 });

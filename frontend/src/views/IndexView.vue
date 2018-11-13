@@ -34,13 +34,19 @@
 <script lang="ts">
 import * as api from '@/api';
 import { Component, Vue } from 'vue-property-decorator';
+import store from '@/store';
 
 @Component
 export default class IndexView extends Vue {
   page = 0;
   threadsCount = 0;
   perPage = 20;
-  threads: IThread[] = [];
+  get threads() {
+    return store.threads;
+  }
+  set threads(x: IThread[]) {
+    store.threads = x;
+  }
   threads_fields = [
     { key: 'title', label: 'Title' },
     { key: 'creator', label: 'Creator' },
@@ -69,11 +75,11 @@ export default class IndexView extends Vue {
   }
 
   get pageVModel() {
-    return this.page;
+    return this.page + 1;
   }
 
   set pageVModel(x: number) {
-    this.changePage(x);
+    this.changePage(x - 1);
   }
 
   async ratingPlus(_id: string) {
