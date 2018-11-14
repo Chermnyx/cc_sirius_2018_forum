@@ -9,7 +9,7 @@ interface IThread {
   title: string;
   rating: number;
   creator: IUser;
-  canVote?: boolean;
+  vote?: 1 | -1;
   creationDate: string;
 }
 
