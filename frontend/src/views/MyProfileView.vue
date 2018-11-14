@@ -1,6 +1,17 @@
 <template>
   <div class="container">
     <div class="row">
+      <div class="col-12 card">
+        <b-form class="card-body" @submit="onUsernameSubmit">
+          <b-form-group label="New username">
+            <b-input type="text" v-model="username" />
+          </b-form-group>
+          <b-btn type="submit" variant="primary" class="float-right">Submit</b-btn>
+        </b-form>
+      </div>
+    </div>
+
+    <div class="row">
       <div class="col-md-6 col-12 card">
         <b-form class="card-body">
           <b-form-group label="New email" key="email1">
@@ -47,6 +58,12 @@ export default class MyProfileView extends Vue {
     password1: '',
     password2: '',
   };
+
+  username = '';
+
+  async onUsernameSubmit(e: Event) {
+    e.preventDefault();
+  }
 
   async onPasswordSubmit(e: Event) {
     e.preventDefault();
