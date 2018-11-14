@@ -46,6 +46,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import * as api from '@/api';
+import { UserExistError } from '@/errors';
 
 @Component
 export default class MyProfileView extends Vue {
@@ -62,13 +64,33 @@ export default class MyProfileView extends Vue {
   username = '';
 
   async onUsernameSubmit(e: Event) {
+    try {
+      await api.editProfile(this.username);
+    } catch (e) {
+      if (e instanceof UserExistError) {
+        alert('Not unique username');
+      } else {
+        throw e;
+      }
+    }
     e.preventDefault();
   }
 
   async onPasswordSubmit(e: Event) {
+    if (this.password.password1 !== this.password.password2) {
+      alert(`Passwords don't match`);
+      return;
+    }
+    await api.editProfile(undefined, undefined, this.password.password1);
     e.preventDefault();
   }
+
   async onEmailSubmit(e: Event) {
+    if (this.email.email1 !== this.email.email1) {
+      alert(`Emails don't match`);
+      return;
+    }
+    await api.editProfile(undefined, this.email.email1);
     e.preventDefault();
   }
 }
