@@ -21,7 +21,7 @@
       </template>
 
       <template slot="rating" slot-scope="{ value: rating, item }">
-        {{ rating }}
+        <span :class="`text-${item.vote===1 ? 'success' : item.vote === -1 ? 'danger': ''}`">{{ rating }}</span>
         <b-btn variant="link" size="sm" @click="() => ratingMinus(item._id)"><b class="text-danger mx-1">-</b></b-btn>
         <b-btn variant="link" size="sm" @click="() => ratingPlus(item._id)"><b class="text-success mx-1">+</b></b-btn>
       </template>

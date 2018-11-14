@@ -1,6 +1,9 @@
 <template>
   <div class="container">
     <h1>{{thread && thread.title}}</h1>
+    Rating: {{ thread && thread.rating }}
+    <b-btn variant="link" size="sm" @click="ratingMinus"><b class="text-danger mx-1">-</b></b-btn>
+    <b-btn variant="link" size="sm" @click="ratingPlus"><b class="text-success mx-1">+</b></b-btn>
 
     <div class="card my-3" v-for="post of posts" :key="post._id">
       <span class="card-header">
@@ -67,7 +70,23 @@ export default class ThreadView extends Vue {
     this.pageLoading = false;
   }
 
-  created() {
+  async ratingPlus() {
+    const status = await api.vote(this._id, 1);
+    const thread = this.thread!;
+    if (status) {
+      Vue.set(thread, 'rating', thread.rating + 1);
+    }
+  }
+  async ratingMinus() {
+    const status = await api.vote(this._id, -1);
+    const thread = this.thread!;
+    if (status) {
+      Vue.set(thread, 'rating', thread.rating - 1);
+    }
+  }
+
+  async created() {
+    this.thread = await api.getThread(this._id);
     this.changePage(0);
   }
 }
