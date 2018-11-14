@@ -44,6 +44,20 @@ export async function newThread(title: string): Promise<IThread> {
   };
 }
 
+export async function newPost(text?: string, file?: File): Promise<IPost> {
+  return {
+    _id: '1',
+    author: {
+      _id: 'user1',
+      email: 'kek@kek.kek',
+      username: 'kek',
+    },
+    creationDate: new Date().toISOString(),
+    text,
+    threadId: 'th1',
+  };
+}
+
 export async function getThreads(
   count: number,
   skip: number,

@@ -24,6 +24,24 @@
       </div>
     </div>
 
+    <div class="card my-3" key="new_post">
+      <div class="card-header">
+        <h5>New post</h5>
+      </div>
+
+      <b-form class="card-body" @submit="onNewPostSubmit">
+        <b-form-group label="Text">
+          <b-form-textarea v-model="newPostText" />
+        </b-form-group>
+
+        <b-form-group label="Picture">
+          <b-form-file v-model="newPostFile" accept="image/*" />
+        </b-form-group>
+
+        <b-btn type="submit" variant="primary" class="float-right">Submit</b-btn>
+      </b-form>
+    </div>
+
     <b-pagination align="center" :total-rows="this.postsCount" v-model="pageVModel" :per-page="this.perPage" :disabled="pageLoading" />
   </div>
 </template>
@@ -38,6 +56,9 @@ import store from '@/store';
 @Component
 export default class ThreadView extends Vue {
   pageLoading = true;
+
+  newPostText = '';
+  newPostFile: File | null = null;
 
   @Prop()
   _id!: string;
@@ -68,6 +89,12 @@ export default class ThreadView extends Vue {
     ));
 
     this.pageLoading = false;
+  }
+
+  async onNewPostSubmit(e: Event) {
+    e.preventDefault();
+    await api.newPost(this.newPostText || undefined, this.newPostFile || undefined);
+    await this.changePage(Math.floor(this.postsCount / this.perPage));
   }
 
   async ratingPlus() {
