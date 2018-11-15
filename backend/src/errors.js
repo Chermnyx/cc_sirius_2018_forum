@@ -36,6 +36,7 @@ class UserExistError extends ApiError {
 class UnauthorizedError extends ApiError {}
 class InvalidPasswordError extends ApiError {}
 class AlreadyVotedError extends ApiError {}
+class TokenExpiredError extends ApiError {}
 
 class ValidationError extends ApiError {
   constructor(err) {
@@ -53,4 +54,5 @@ module.exports = {
   InvalidPasswordError,
   AlreadyVotedError,
   ValidationError,
+  TokenExpiredError,
 };
