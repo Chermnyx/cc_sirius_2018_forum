@@ -11,6 +11,8 @@ const upload = multer({
   limits: { fileSize: MAX_UPLOAD_BYTES },
 });
 
+const PICS_ROUTE = '/pic';
+
 module.exports = {
   DEBUG,
   STATIC_PATH,
@@ -18,5 +20,6 @@ module.exports = {
   BIG_IMAGE_SIZE,
   SMALL_IMAGE_SIZE,
   SMALL_JPEG_Q,
+  PICS_ROUTE,
   upload,
 };
