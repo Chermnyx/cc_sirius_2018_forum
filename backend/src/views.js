@@ -208,7 +208,7 @@ router.post(
   cfg.upload.single('pic'),
   asyncHandler(async (req, res) => {
     let { threadId, text } = validate(req.body, {
-      threadId: cfg.objectIdRegex,
+      threadId: Joi.string().regex(cfg.objectIdRegex),
       text: Joi.string()
         .optional()
         .min(3)
@@ -271,6 +271,22 @@ router.post(
         threads.map((thread) => thread.toClientJSON(req.user && req.user._id))
       )
     );
+  })
+);
+
+router.post(
+  '/api/getThread',
+  authenticate,
+  authenticateOptional,
+  asyncHandler(async (req, res) => {
+    const { threadId } = validate(req.body, {
+      threadId: Joi.string().regex(cfg.objectIdRegex),
+    });
+
+    const thread = await ThreadModel.findById(threadId);
+    if (!thread) throw new errors.ThreadNotFoundError(threadId);
+
+    res.json(await thread.toClientJSON(thread));
   })
 );
 
