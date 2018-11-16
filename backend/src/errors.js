@@ -6,7 +6,7 @@ class ApiError extends Error {
 
   toJSON() {
     const obj = {
-      error: this.name,
+      error: this.constructor.name,
       message: this.message,
     };
     for (const field of this.fields) {
