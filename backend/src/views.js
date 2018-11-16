@@ -267,11 +267,12 @@ router.post(
       .limit(count)
       .exec();
 
-    res.json(
-      await Promise.all(
+    res.json({
+      threads: await Promise.all(
         threads.map((thread) => thread.toClientJSON(req.user && req.user._id))
-      )
-    );
+      ),
+      total: await ThreadModel.count({}).exec(),
+    });
   })
 );
 
@@ -313,7 +314,10 @@ router.post(
       .limit(count)
       .exec();
 
-    res.json(await Promise.all(posts.map((post) => post.toClientJSON())));
+    res.json({
+      posts: await Promise.all(posts.map((post) => post.toClientJSON())),
+      total: await PostModel.count({ threadId }),
+    });
   })
 );
 
