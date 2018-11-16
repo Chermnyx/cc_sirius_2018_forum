@@ -27,6 +27,18 @@ app.use((err, req, res, next) => {
   }
 });
 
+// prevent errors leak to client in production mode
+if (!cfg.DEBUG) {
+  app.use((err, req, res, next) => {
+    if (err) {
+      res.status(500).json({
+        error: 'InternalError',
+        message: '',
+      });
+    } else next();
+  });
+}
+
 if (require.main === module) {
   const server = new (require('http')).Server(app);
 
