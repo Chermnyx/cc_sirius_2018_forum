@@ -16,6 +16,8 @@ app.set('lastModified', false);
 app.set('x-powered-by', false);
 
 app.use(require('./views'));
+app.use('/', express.static(`${__dirname}/../static`));
+
 app.use((err, req, res, next) => {
   if (err && err.isJoi) {
     next(new errors.ValidationError(err));

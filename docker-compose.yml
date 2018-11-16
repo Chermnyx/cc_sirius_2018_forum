@@ -1,0 +1,43 @@
+version: '3.6'
+
+services:
+  db:
+    image: 'mongo:3.6'
+
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+
+    volumes:
+      - 'db-data:/data/db'
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    depends_on:
+      - db
+
+    working_dir: /app/backend
+
+    volumes:
+      - 'static-storage:/static'
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          size: 1073741824 # 1GiB
+
+    ports:
+      - 8000:8000
+
+    environment:
+      SERVER_ADDRESS: '0.0.0.0'
+      SERVER_PORT: '8000'
+      DOCKER: '1'
+
+    command: [yarn, start]
+
+volumes:
+  db-data:
+  static-storage:
