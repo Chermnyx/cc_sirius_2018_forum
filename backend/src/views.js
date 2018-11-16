@@ -55,6 +55,14 @@ function authenticate(req, res, next) {
     .catch((err) => next(err));
 }
 
+function authenticateOptional(err, req, res, next) {
+  if (err && err instanceof errors.UnauthorizedError) {
+    next();
+  } else {
+    next(err);
+  }
+}
+
 router.post(
   '/api/register',
   asyncHandler(async (req, res) => {
@@ -233,6 +241,36 @@ router.post(
     if (!req.file && !text) throw new errors.InvalidPostError();
 
     res.json(await (await post.save()).toClientJSON());
+  })
+);
+
+router.post(
+  '/api/getThreads',
+  authenticate,
+  authenticateOptional,
+  asyncHandler(async (req, res) => {
+    const { count, skip } = validate(req.body, {
+      count: Joi.number()
+        .integer()
+        .min(1)
+        .max(50),
+      skip: Joi.number()
+        .integer()
+        .optional()
+        .default(0)
+        .min(0),
+    });
+
+    const threads = await ThreadModel.find()
+      .skip(skip)
+      .limit(count)
+      .exec();
+
+    res.json(
+      await Promise.all(
+        threads.map((thread) => thread.toClientJSON(req.user && req.user._id))
+      )
+    );
   })
 );
 

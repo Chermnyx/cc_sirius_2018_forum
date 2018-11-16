@@ -11,12 +11,15 @@ const mongoose = require('mongoose');
 
 class Thread {
   async toClientJSON(userId) {
+    const dbVote = userId
+      ? await VoteModel.findOne({ userId, threadId: this._id }).exec()
+      : undefined;
     return {
       _id: this._id,
       title: this.title,
       rating: this.rating,
       creator: (await UserModel.findById(this.creatorId).exec()).toClientJSON(),
-      vote: (await VoteModel.find({ userId, threadId: this._id }).exec()).vote,
+      vote: dbVote ? dbVote.vote : undefined,
       creationDate: this.creationDate,
     };
   }
