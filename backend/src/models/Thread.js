@@ -51,9 +51,6 @@ const ThreadModel = mongoose.model(
         .exec();
       await Promise.all(
         posts.map(async (post) => {
-          if (fs.existsSync(`${cfg.STATIC_PATH}/pics/${post.pic}`)) {
-            await fs.promises.unlink(`${cfg.STATIC_PATH}/pics/${post.pic}`);
-          }
           await post.remove();
         })
       );

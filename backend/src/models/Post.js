@@ -47,7 +47,13 @@ const PostModel = mongoose.model(
       type: Date,
       default: () => new Date(),
     },
-  }).loadClass(Post)
+  })
+    .loadClass(Post)
+    .pre('remove', async function() {
+      if (fs.existsSync(`${cfg.STATIC_PATH}/pics/${this.pic}`)) {
+        await fs.promises.unlink(`${cfg.STATIC_PATH}/pics/${this.pic}`);
+      }
+    })
 );
 
 module.exports = {
