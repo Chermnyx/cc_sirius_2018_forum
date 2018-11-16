@@ -141,4 +141,25 @@ router.post(
   })
 );
 
+router.post(
+  '/api/editPassword',
+  authenticate,
+  asyncHandler(async (req, res) => {
+    const { oldPassword, newPassword } = validate(req.body, {
+      oldPassword: Joi.string().max(128),
+      newPassword: Joi.string().max(128),
+    });
+
+    const oldPasswordHash = User.hashPassword(oldPassword);
+    if (req.user.passwordHash !== oldPasswordHash) {
+      throw new errors.InvalidPasswordError();
+    }
+
+    req.user.passwordHash = User.hashPassword(newPassword);
+    await req.user.save();
+
+    res.json(true);
+  })
+);
+
 module.exports = router;
