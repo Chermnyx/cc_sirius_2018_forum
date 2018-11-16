@@ -290,4 +290,30 @@ router.post(
   })
 );
 
+router.post(
+  '/api/getPosts',
+  asyncHandler(async (req, res) => {
+    const { threadId, count, skip } = validate(req.body, {
+      threadId: Joi.string().regex(cfg.objectIdRegex),
+      count: Joi.number()
+        .integer()
+        .min(1)
+        .max(50),
+      skip: Joi.number()
+        .integer()
+        .optional()
+        .default(0)
+        .min(0),
+    });
+
+    const posts = await PostModel.find({ threadId })
+      .sort('creationDate')
+      .skip(skip)
+      .limit(count)
+      .exec();
+
+    res.json(await Promise.all(posts.map((post) => post.toClientJSON())));
+  })
+);
+
 module.exports = router;
