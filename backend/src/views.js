@@ -262,6 +262,7 @@ router.post(
     });
 
     const threads = await ThreadModel.find()
+      .sort('-rating')
       .skip(skip)
       .limit(count)
       .exec();
