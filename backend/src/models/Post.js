@@ -13,7 +13,7 @@ class Post {
     return {
       _id: this._id,
       threadId: this.threadId.toString(),
-      author: await UserModel.findById(this.authorId).exec(),
+      author: (await UserModel.findById(this.authorId).exec()).toClientJSON(),
       text: this.text,
       pic: fs.existsSync(picPath) ? picPath : undefined,
       creationDate: this.creationDate,
