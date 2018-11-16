@@ -69,6 +69,14 @@ class User {
       throw new errors.TokenExpiredError();
     }
   }
+
+  toClientJSON() {
+    return {
+      _id: this._id,
+      email: this.email,
+      username: this.username,
+    };
+  }
 }
 
 const UserModel = model(
