@@ -4,6 +4,9 @@ const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 const BIG_IMAGE_SIZE = 2048;
 const SMALL_IMAGE_SIZE = 512;
 const SMALL_JPEG_Q = 51;
+const DB_URL = process.env.DOCKER
+  ? 'mongodb://db:27017/cyber2ch'
+  : 'mongodb://localhost:27017/cyber2ch';
 
 const multer = require('multer');
 const upload = multer({
@@ -21,5 +24,6 @@ module.exports = {
   SMALL_IMAGE_SIZE,
   SMALL_JPEG_Q,
   PICS_ROUTE,
+  DB_URL,
   upload,
 };

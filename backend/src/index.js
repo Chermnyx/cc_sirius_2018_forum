@@ -1,9 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const cfg = require('./cfg');
 const errors = require('./errors');
 
+mongoose.connect(cfg.DB_URL);
 const app = express();
 
 app.use(bodyParser.json());
