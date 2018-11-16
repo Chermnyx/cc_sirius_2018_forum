@@ -1,5 +1,5 @@
 const DEBUG = process.env.NODE_ENV === 'development';
-const STATIC_PATH = process.env.DOCKER ? '/static' : '/var/tmp/';
+const STATIC_PATH = process.env.DOCKER ? '/static' : '/var/tmp/cyber2ch';
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 const BIG_IMAGE_SIZE = 2048;
 const SMALL_IMAGE_SIZE = 512;

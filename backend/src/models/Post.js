@@ -9,13 +9,14 @@ const mongoose = require('mongoose');
 
 class Post {
   async toClientJSON() {
-    const picPath = `${cfg.PICS_ROUTE}/${this.pic}`;
     return {
       _id: this._id,
       threadId: this.threadId.toString(),
       author: (await UserModel.findById(this.authorId).exec()).toClientJSON(),
       text: this.text,
-      pic: fs.existsSync(picPath) ? picPath : undefined,
+      pic: fs.existsSync(`${cfg.STATIC_PATH}/pics/${this.pic}`)
+        ? `${cfg.PICS_ROUTE}/${this.pic}`
+        : undefined,
       creationDate: this.creationDate,
     };
   }

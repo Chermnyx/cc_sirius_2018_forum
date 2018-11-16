@@ -46,6 +46,9 @@ class InvalidPasswordError extends ApiError {}
 class AlreadyVotedError extends ApiError {}
 class TokenExpiredError extends ApiError {}
 
+class InvalidPictureError extends ApiError {}
+class InvalidPostError extends ApiError {}
+
 class ValidationError extends ApiError {
   constructor(err) {
     super(`Validation error`);
@@ -64,4 +67,6 @@ module.exports = {
   ValidationError,
   TokenExpiredError,
   ThreadNotFoundError,
+  InvalidPictureError,
+  InvalidPostError,
 };

@@ -1,4 +1,7 @@
+const fs = require('fs');
+
 const Joi = require('joi');
+const sharp = require('sharp');
 const router = require('express').Router();
 
 const cfg = require('./cfg');
@@ -188,6 +191,48 @@ router.post(
     }).save();
 
     res.json(await thread.toClientJSON());
+  })
+);
+
+router.post(
+  '/api/newPost',
+  authenticate,
+  cfg.upload.single('pic'),
+  asyncHandler(async (req, res) => {
+    let { threadId, text } = validate(req.body, {
+      threadId: cfg.objectIdRegex,
+      text: Joi.string()
+        .optional()
+        .min(3)
+        .max(cfg.MAX_POST_SIZE),
+    });
+
+    if (text === undefined) text = null; // to match DB type
+
+    const post = new PostModel({ threadId, text, authorId: req.user._id });
+
+    if (req.file) {
+      const picBuf = await fs.promises.readFile(req.file.path);
+      let newPicBuf;
+
+      try {
+        newPicBuf = await sharp(picBuf)
+          .resize(512, 512, { fit: 'inside' })
+          .jpeg({ quality: 80 })
+          .toBuffer();
+      } catch {
+        throw new errors.InvalidPictureError();
+      }
+
+      await fs.promises.writeFile(
+        `${cfg.STATIC_PATH}/pics/${post.pic}`,
+        newPicBuf
+      );
+    }
+
+    if (!req.file && !text) throw new errors.InvalidPostError();
+
+    res.json(await (await post.save()).toClientJSON());
   })
 );
 
