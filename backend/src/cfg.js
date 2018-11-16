@@ -14,6 +14,8 @@ const upload = multer({
   limits: { fileSize: MAX_UPLOAD_BYTES },
 });
 
+const objectIdRegex = /^[a-f\d]{24}$/i;
+
 const PICS_ROUTE = '/pic';
 
 module.exports = {
@@ -26,4 +28,5 @@ module.exports = {
   PICS_ROUTE,
   DB_URL,
   upload,
+  objectIdRegex,
 };

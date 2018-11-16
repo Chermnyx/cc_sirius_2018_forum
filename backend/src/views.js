@@ -1,6 +1,7 @@
 const Joi = require('joi');
 const router = require('express').Router();
 
+const cfg = require('./cfg');
 const errors = require('./errors');
 const { User } = require('./models/User');
 const { VoteModel } = require('./models/Vote');
@@ -29,7 +30,6 @@ function validate(object, schema) {
   return value;
 }
 
-router.post(
 function authenticate(req, res, next) {
   const auth = req.headers.authorization;
   if (!auth) {
@@ -52,6 +52,7 @@ function authenticate(req, res, next) {
     .catch((err) => next(err));
 }
 
+router.post(
   '/api/register',
   asyncHandler(async (req, res) => {
     const { email, username, password } = validate(req.body, {
@@ -79,6 +80,43 @@ router.post(
     const token = await User.login(email, password);
 
     res.json(token);
+  })
+);
+
+router.post(
+  '/api/vote',
+  authenticate,
+  asyncHandler(async (req, res) => {
+    const { threadId, vote } = validate(req.body, {
+      threadId: Joi.string().regex(cfg.objectIdRegex),
+      vote: Joi.valid([-1, 1]),
+    });
+
+    const thread = await ThreadModel.findById(threadId).exec();
+    if (!thread) throw new errors.ThreadNotFoundError(threadId);
+
+    const dbVote = await VoteModel.findOne({
+      threadId,
+      userId: this.user._id,
+    }).exec();
+    if (!dbVote) {
+      thread.rating += vote;
+      await Promise.all([
+        thread.save(),
+        new VoteModel({ threadId, userId: this.user._id, vote }).save(),
+      ]);
+
+      res.json(true);
+      return;
+    }
+
+    if (dbVote.vote === vote) {
+      throw new errors.AlreadyVotedError();
+    }
+
+    thread.rating += vote;
+    await Promise.all([thread.save(), dbVote.remove()]);
+    res.json(true);
   })
 );
 

@@ -24,6 +24,14 @@ class UserNotFoundError extends ApiError {
   }
 }
 
+class ThreadNotFoundError extends ApiError {
+  constructor(threadId) {
+    super(`thread ${threadId} not found`);
+    this.fields = ['threadId'];
+    this.threadId = threadId;
+  }
+}
+
 class UserExistError extends ApiError {
   constructor(email, username) {
     super(`User email:${email} username:${username} already exist`);
@@ -55,4 +63,5 @@ module.exports = {
   AlreadyVotedError,
   ValidationError,
   TokenExpiredError,
+  ThreadNotFoundError,
 };
