@@ -46,7 +46,17 @@ const ThreadModel = mongoose.model(
     .loadClass(Thread)
     .pre('remove', async function() {
       await VoteModel.deleteMany({ threadId: this._id }).exec();
-      await PostModel.deleteMany({ threadId: this._id }).exec();
+      const posts = await PostModel.find({ threadId: this._id })
+        .select('pic')
+        .exec();
+      await Promise.all(
+        posts.map(async (post) => {
+          if (fs.existsSync(`${cfg.STATIC_PATH}/pics/${post.pic}`)) {
+            await fs.promises.unlink(`${cfg.STATIC_PATH}/pics/${post.pic}`);
+          }
+          await post.remove();
+        })
+      );
     })
 );
 
