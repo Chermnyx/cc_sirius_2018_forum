@@ -3,7 +3,7 @@ const uuidv4 = require('uuid/v4');
 
 const errors = require('../errors');
 
-const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
 
 class User {
   static hashPassword(password) {
@@ -79,9 +79,9 @@ class User {
   }
 }
 
-const UserModel = model(
+const UserModel = mongoose.model(
   'User',
-  new Schema({
+  new mongoose.Schema({
     email: {
       type: String,
       required: true,

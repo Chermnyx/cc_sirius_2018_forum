@@ -1,22 +1,22 @@
 const errors = require('../errors');
 
-const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
 
 class Vote {}
 
-const VoteModel = model(
+const VoteModel = mongoose.model(
   'Vote',
-  new Schema({
+  new mongoose.Schema({
     vote: {
       type: Number,
       required: true,
     },
     threadId: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       index: true,
     },
     userId: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       index: true,
     },
   }).loadClass(Vote)

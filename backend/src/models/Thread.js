@@ -7,7 +7,7 @@ const { PostModel } = require('./Post');
 const cfg = require('../cfg');
 const errors = require('../errors');
 
-const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
 
 class Thread {
   async toClientJSON(userId) {
@@ -22,9 +22,9 @@ class Thread {
   }
 }
 
-const ThreadModel = model(
+const ThreadModel = mongoose.model(
   'Thread',
-  new Schema({
+  new mongoose.Schema({
     title: {
       type: String,
       required: true,
@@ -35,7 +35,7 @@ const ThreadModel = model(
       default: () => 0,
     },
     creatorId: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
     creationDate: {
