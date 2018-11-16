@@ -1,13 +1,13 @@
 <template>
   <div class="container">
     <h1>{{thread && thread.title}}</h1>
-    Rating: {{ thread && thread.rating }}
-    <b-btn variant="link" size="sm" @click="ratingMinus"><b class="text-danger mx-1">-</b></b-btn>
-    <b-btn variant="link" size="sm" @click="ratingPlus"><b class="text-success mx-1">+</b></b-btn>
+    Rating: <span :class="`text-${thread && thread.vote===1 ? 'success' : thread && thread.vote === -1 ? 'danger': ''}`">{{ thread && thread.rating }}</span>
+    <b-btn v-if="store.authorized" variant="link" size="sm" @click="ratingMinus"><b class="text-danger mx-1">-</b></b-btn>
+    <b-btn v-if="store.authorized" variant="link" size="sm" @click="ratingPlus"><b class="text-success mx-1">+</b></b-btn>
 
     <div class="card my-3" v-for="post of posts" :key="post._id">
       <span class="card-header">
-        <router-link :to="`/user/${post.author._id}`">@{{ post.author.username }}</router-link>
+        <span :to="`/user/${post.author._id}`">@{{ post.author.username }}</span>
         <small class="float-right mt-1">{{ new Date(post.creationDate).toLocaleString() }}</small>
       </span>
       <div class="card-body">
@@ -24,7 +24,7 @@
       </div>
     </div>
 
-    <div class="card my-3" key="new_post">
+    <div v-if="store.authorized" class="card my-3" key="new_post">
       <div class="card-header">
         <h5>New post</h5>
       </div>
@@ -55,6 +55,8 @@ import store from '@/store';
 
 @Component
 export default class ThreadView extends Vue {
+  store = store;
+
   pageLoading = true;
 
   newPostText = '';
@@ -93,8 +95,10 @@ export default class ThreadView extends Vue {
 
   async onNewPostSubmit(e: Event) {
     e.preventDefault();
-    await api.newPost(this.newPostText || undefined, this.newPostFile || undefined);
+    await api.newPost(this._id, this.newPostText || undefined, this.newPostFile || undefined);
     await this.changePage(Math.floor(this.postsCount / this.perPage));
+    this.newPostText = '';
+    this.newPostFile = null;
   }
 
   async ratingPlus() {
@@ -102,6 +106,7 @@ export default class ThreadView extends Vue {
     const thread = this.thread!;
     if (status) {
       Vue.set(thread, 'rating', thread.rating + 1);
+      Vue.set(thread, 'vote', (thread.vote || 0) + 1);
     }
   }
   async ratingMinus() {
@@ -109,6 +114,7 @@ export default class ThreadView extends Vue {
     const thread = this.thread!;
     if (status) {
       Vue.set(thread, 'rating', thread.rating - 1);
+      Vue.set(thread, 'vote', (thread.vote || 0) - 1);
     }
   }
 

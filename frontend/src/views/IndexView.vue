@@ -1,13 +1,13 @@
 <template>
   <div class="container">
-    <b-modal hide-header-close :no-close-on-esc="creatingThread" :no-close-on-backdrop="creatingThread" :busy="creatingThread" @hide="onModalHide" v-model="indexModalActive" @ok="onModalOK" title="Create new thread">
+    <b-modal v-if="store.authorized" hide-header-close :no-close-on-esc="creatingThread" :no-close-on-backdrop="creatingThread" :busy="creatingThread" @hide="onModalHide" v-model="indexModalActive" @ok="onModalOK" title="Create new thread">
       <b-form-group label="Thread title">
         <b-form-input :disabled="creatingThread" ref="newThreadInput" type="text" v-model="newThreadTitle" />
       </b-form-group>
     </b-modal>
 
     <h1 class="float-left">Threads</h1>
-    <b-btn @click="indexModalActive = !indexModalActive" variant="link" class="mt-1 float-right">
+    <b-btn v-if="store.authorized" @click="indexModalActive = !indexModalActive" variant="link" class="mt-1 float-right">
       New Thread
     </b-btn>
 
@@ -17,13 +17,13 @@
       </template>
 
       <template slot="creator" slot-scope="{ value: creator }">
-        <router-link :to="`/user/${creator._id}`">@{{creator.username}}</router-link>
+        <span :to="`/user/${creator._id}`">@{{creator.username}}</span>
       </template>
 
       <template slot="rating" slot-scope="{ value: rating, item }">
         <span :class="`text-${item.vote===1 ? 'success' : item.vote === -1 ? 'danger': ''}`">{{ rating }}</span>
-        <b-btn variant="link" size="sm" @click="() => ratingMinus(item._id)"><b class="text-danger mx-1">-</b></b-btn>
-        <b-btn variant="link" size="sm" @click="() => ratingPlus(item._id)"><b class="text-success mx-1">+</b></b-btn>
+        <b-btn v-if="store.authorized" variant="link" size="sm" @click="() => ratingMinus(item._id)"><b class="text-danger mx-1">-</b></b-btn>
+        <b-btn v-if="store.authorized" variant="link" size="sm" @click="() => ratingPlus(item._id)"><b class="text-success mx-1">+</b></b-btn>
       </template>
     </b-table>
 
@@ -38,6 +38,8 @@ import store from '@/store';
 
 @Component
 export default class IndexView extends Vue {
+  store = store;
+
   page = 0;
   threadsCount = 0;
   perPage = 20;
@@ -88,6 +90,7 @@ export default class IndexView extends Vue {
     if (thread === undefined) return;
     if (status) {
       Vue.set(thread, 'rating', thread.rating + 1);
+      Vue.set(thread, 'vote', (thread.vote || 0) + 1);
     }
   }
   async ratingMinus(_id: string) {
@@ -96,6 +99,7 @@ export default class IndexView extends Vue {
     if (thread === undefined) return;
     if (status) {
       Vue.set(thread, 'rating', thread.rating - 1);
+      Vue.set(thread, 'vote', (thread.vote || 0) - 1);
     }
   }
 

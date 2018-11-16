@@ -1,5 +1,10 @@
 <template>
   <div class="container">
+    <div class="row mb-3">
+      <div class="col-12">
+        <b-btn variant="danger" class="float-right" @click="onLogoutClicked">Logout</b-btn>
+      </div>
+    </div>
     <div class="row">
       <div class="col-12 card">
         <b-form class="card-body" @submit="onUsernameSubmit">
@@ -13,7 +18,7 @@
 
     <div class="row">
       <div class="col-md-6 col-12 card">
-        <b-form class="card-body">
+        <b-form class="card-body" @submit="onEmailSubmit">
           <b-form-group label="New email" key="email1">
             <b-input type="email" v-model="email.email1" />
           </b-form-group>
@@ -27,7 +32,11 @@
       </div>
 
       <div class="col-md-6 col-12 card">
-        <b-form class="card-body">
+        <b-form class="card-body" @submit="onPasswordSubmit">
+          <b-form-group label="Old password" key="oldPassword">
+            <b-input type="password" v-model="password.oldPassword" />
+          </b-form-group>
+
           <b-form-group label="New password" key="password1">
             <b-input type="password" v-model="password.password1" />
           </b-form-group>
@@ -47,7 +56,6 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import * as api from '@/api';
-import { UserExistError } from '@/errors';
 
 @Component
 export default class MyProfileView extends Vue {
@@ -57,41 +65,52 @@ export default class MyProfileView extends Vue {
   };
 
   password = {
+    oldPassword: '',
     password1: '',
     password2: '',
   };
 
   username = '';
 
+  async onLogoutClicked() {
+    await api.logout();
+    this.$router.push('/');
+  }
+
   async onUsernameSubmit(e: Event) {
+    e.preventDefault();
+
     try {
       await api.editProfile(this.username);
-    } catch (e) {
-      if (e.error === 'UserExistError') {
-        alert('Not unique username');
-      } else {
-        throw e;
-      }
+    } catch {
+      return;
     }
-    e.preventDefault();
+
+    this.username = '';
   }
 
   async onPasswordSubmit(e: Event) {
+    e.preventDefault();
     if (this.password.password1 !== this.password.password2) {
       alert(`Passwords don't match`);
       return;
     }
-    await api.editProfile(undefined, undefined, this.password.password1);
-    e.preventDefault();
+    await api.editPassword(this.password.oldPassword, this.password.password1);
+
+    this.password.password1 = '';
+    this.password.password2 = '';
+    this.password.oldPassword = '';
   }
 
   async onEmailSubmit(e: Event) {
-    if (this.email.email1 !== this.email.email1) {
+    e.preventDefault();
+    if (this.email.email1 !== this.email.email2) {
       alert(`Emails don't match`);
       return;
     }
     await api.editProfile(undefined, this.email.email1);
-    e.preventDefault();
+    this.email.email1 = '';
+    this.email.email2 = '';
   }
 }
 </script>

@@ -56,7 +56,11 @@ function authenticate(req, res, next) {
 }
 
 function authenticateOptional(err, req, res, next) {
-  if (err && err instanceof errors.UnauthorizedError) {
+  if (
+    err &&
+    (err instanceof errors.UnauthorizedError ||
+      err instanceof errors.TokenExpiredError)
+  ) {
     next();
   } else {
     next(err);
@@ -323,6 +327,18 @@ router.post(
 
 router.post('/api/getMe', authenticate, (req, res) => {
   res.json(req.user.toClientJSON());
+});
+
+router.get('/pic/:name', (req, res) => {
+  const picName = validate(
+    req.params.name,
+    Joi.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z[01]\.\d+$/)
+  );
+
+  res.sendFile(picName, {
+    dotfiles: 'deny',
+    root: `${cfg.STATIC_PATH}/pics/`,
+  });
 });
 
 module.exports = router;

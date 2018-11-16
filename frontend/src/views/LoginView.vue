@@ -25,9 +25,13 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import store from '@/store';
 import * as api from '@/api';
+import { Prop } from 'vue-property-decorator';
 
 @Component
 export default class LoginView extends Vue {
+  @Prop({ default: () => '/' })
+  nextRoute!: string;
+
   store = store;
   mode: 'login' | 'reg' = 'login';
   options = [{ text: 'Login', value: 'login' }, { text: 'Create account', value: 'reg' }];
@@ -38,8 +42,17 @@ export default class LoginView extends Vue {
     password: '',
   };
 
-  onSubmit(e: Event) {
+  async onSubmit(e: Event) {
     e.preventDefault();
+    if (!this.form.email || !this.form.password || (this.mode === 'reg' && !this.form.username)) {
+      alert('Please fill all fields');
+      return;
+    }
+
+    if (this.mode === 'login') await api.login(this.form.email, this.form.password);
+    else await api.register(this.form.email, this.form.username, this.form.password);
+
+    this.$router.push(this.nextRoute);
   }
 }
 </script>
