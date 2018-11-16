@@ -84,6 +84,16 @@ router.post(
 );
 
 router.post(
+  '/api/logout',
+  authenticate,
+  asyncHandler(async (req, res) => {
+    req.user.token = null;
+    await req.user.save();
+    res.json(true);
+  })
+);
+
+router.post(
   '/api/vote',
   authenticate,
   asyncHandler(async (req, res) => {
