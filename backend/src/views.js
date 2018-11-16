@@ -321,4 +321,8 @@ router.post(
   })
 );
 
+router.post('/api/getMe', authenticate, (req, res) => {
+  res.json(req.user.toClientJSON());
+});
+
 module.exports = router;
