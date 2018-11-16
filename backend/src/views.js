@@ -118,13 +118,13 @@ router.post(
 
     const dbVote = await VoteModel.findOne({
       threadId,
-      userId: this.user._id,
+      userId: req.user._id,
     }).exec();
     if (!dbVote) {
       thread.rating += vote;
       await Promise.all([
         thread.save(),
-        new VoteModel({ threadId, userId: this.user._id, vote }).save(),
+        new VoteModel({ threadId, userId: req.user._id, vote }).save(),
       ]);
 
       res.json(true);
