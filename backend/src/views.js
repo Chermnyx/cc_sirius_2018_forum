@@ -46,4 +46,18 @@ router.post(
   })
 );
 
+router.post(
+  '/api/login',
+  asyncHandler(async (req, res) => {
+    const { email, password } = validate(req.body, {
+      email: Joi.string().email(),
+      password: Joi.string().max(128),
+    });
+
+    const token = await User.login(email, password);
+
+    res.json(token);
+  })
+);
+
 module.exports = router;
