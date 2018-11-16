@@ -57,7 +57,7 @@ class User {
    * @returns {Promise<User>} authenticated user
    */
   static async authenticate(token) {
-    const user = await UserModel.findOne({ token });
+    const user = await UserModel.findOne({ token }).exec();
 
     if (
       user &&

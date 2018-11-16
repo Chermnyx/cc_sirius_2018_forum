@@ -30,6 +30,28 @@ function validate(object, schema) {
 }
 
 router.post(
+function authenticate(req, res, next) {
+  const auth = req.headers.authorization;
+  if (!auth) {
+    next(new errors.UnauthorizedError());
+    return;
+  }
+
+  const match = auth.match(/^Bearer (?<token>.+)$/);
+  if (!match) {
+    next(new errors.UnauthorizedError());
+    return;
+  }
+
+  const token = match.groups.token;
+  User.authenticate(token)
+    .then((user) => {
+      req.user = user;
+      next();
+    })
+    .catch((err) => next(err));
+}
+
   '/api/register',
   asyncHandler(async (req, res) => {
     const { email, username, password } = validate(req.body, {
