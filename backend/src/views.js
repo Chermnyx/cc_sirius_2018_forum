@@ -172,4 +172,23 @@ router.post(
   })
 );
 
+router.post(
+  '/api/newThread',
+  authenticate,
+  asyncHandler(async (req, res) => {
+    const { title } = validate(req.body, {
+      title: Joi.string()
+        .min(3)
+        .max(cfg.MAX_TITLE_LENGTH),
+    });
+
+    const thread = await new ThreadModel({
+      title,
+      creatorId: req.user._id,
+    }).save();
+
+    res.json(await thread.toClientJSON());
+  })
+);
+
 module.exports = router;

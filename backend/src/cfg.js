@@ -8,6 +8,9 @@ const DB_URL = process.env.DOCKER
   ? 'mongodb://db:27017/cyber2ch'
   : 'mongodb://localhost:27017/cyber2ch';
 
+const MAX_POST_SIZE = 1024;
+const MAX_TITLE_LENGTH = 32;
+
 const multer = require('multer');
 const upload = multer({
   dest: STATIC_PATH + '/uploads',
@@ -27,6 +30,8 @@ module.exports = {
   SMALL_JPEG_Q,
   PICS_ROUTE,
   DB_URL,
+  MAX_POST_SIZE,
+  MAX_TITLE_LENGTH,
   upload,
   objectIdRegex,
 };
