@@ -120,4 +120,25 @@ router.post(
   })
 );
 
+router.post(
+  '/api/editProfile',
+  authenticate,
+  asyncHandler(async (req, res) => {
+    const { username, email } = validate(req.body, {
+      email: Joi.string()
+        .email()
+        .optional(),
+      username: Joi.string()
+        .regex(/^[a-zA-Z0-9]{3,10}$/)
+        .optional(),
+    });
+
+    if (email) req.user.email = email;
+    if (username) req.user.username = username;
+    if (email || username) await req.user.save();
+
+    res.json(true);
+  })
+);
+
 module.exports = router;
