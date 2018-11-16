@@ -67,7 +67,7 @@ export default class MyProfileView extends Vue {
     try {
       await api.editProfile(this.username);
     } catch (e) {
-      if (e instanceof UserExistError) {
+      if (e.error === 'UserExistError') {
         alert('Not unique username');
       } else {
         throw e;
