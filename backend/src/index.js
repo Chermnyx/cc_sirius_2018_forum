@@ -11,6 +11,10 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.set('etag', false);
+app.set('lastModified', false);
+app.set('x-powered-by', false);
+
 app.use(require('./views'));
 app.use((err, req, res, next) => {
   if (err && err.isJoi) {
