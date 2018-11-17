@@ -129,8 +129,4 @@ export default class ThreadView extends Vue {
 .post-text {
   white-space: pre-wrap;
 }
-
-img {
-  max-width: 50vh;
-}
 </style>

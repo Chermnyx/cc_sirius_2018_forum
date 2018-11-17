@@ -36,7 +36,10 @@ services:
       SERVER_PORT: '8000'
       DOCKER: '1'
 
-    command: [yarn, start]
+    command:
+      - bash
+      - -c
+      - 'mkdir -p /static/pics /static/uploads; yarn start'
 
 volumes:
   db-data:

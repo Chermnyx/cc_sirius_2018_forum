@@ -37,6 +37,8 @@ app.use((err, req, res, next) => {
 if (!cfg.DEBUG) {
   app.use((err, req, res, next) => {
     if (err) {
+      console.error(err);
+
       res.status(500).json({
         error: 'InternalError',
         message: '',
