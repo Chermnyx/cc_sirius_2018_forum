@@ -10,6 +10,7 @@ const DB_URL = process.env.DOCKER
 
 const MAX_POST_SIZE = 1024;
 const MAX_TITLE_LENGTH = 32;
+const RATING_DEC_INTERVAL = 8.64e7; // 1 day
 
 const multer = require('multer');
 const upload = multer({
@@ -32,6 +33,7 @@ module.exports = {
   DB_URL,
   MAX_POST_SIZE,
   MAX_TITLE_LENGTH,
+  RATING_DEC_INTERVAL,
   upload,
   objectIdRegex,
 };

@@ -33,6 +33,13 @@ app.use((err, req, res, next) => {
   }
 });
 
+async function ratingDownTimer() {
+  const { ThreadModel } = require('./models/Thread');
+  await ThreadModel.updateMany({}, { rating: { $inc: -1 } }).exec();
+}
+
+setInterval(ratingDownTimer, cfg.RATING_DEC_INTERVAL);
+
 // prevent errors leak to client in production mode
 if (!cfg.DEBUG) {
   app.use((err, req, res, next) => {
